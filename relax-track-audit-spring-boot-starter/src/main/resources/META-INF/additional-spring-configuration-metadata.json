@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "track.record.audit.enable-mem",
+      "type": "java.lang.String",
+      "description": "Description for track.record.audit.enable-mem."
+    },
+    {
+      "name": "track.record.audit.max-mem-size",
+      "type": "java.lang.String",
+      "description": "Description for track.record.audit.max-mem-size."
+    },
+    {
+      "name": "track.record.audit.enable-jdbc",
+      "type": "java.lang.String",
+      "description": "Description for track.record.audit.enable-jdbc."
+    }
+  ]
+}

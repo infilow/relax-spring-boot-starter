@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.infilos.spring.track.mvc.AuditMvcAspect,\
+  com.infilos.spring.track.config.WrappedExchangeFilter,\
+  com.infilos.spring.track.config.SpringContextConfigure,\
+  com.infilos.spring.track.config.JsonPathConfigure,\
+  com.infilos.spring.track.config.AuditRecordOptions,\
+  com.infilos.spring.track.service.AuditRecordMemService,\
+  com.infilos.spring.track.service.AuditRecordJdbcService
