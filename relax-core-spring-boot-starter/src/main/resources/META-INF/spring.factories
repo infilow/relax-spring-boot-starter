@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.infilos.spring.config.JsonConfigure,\
+  com.infilos.spring.config.SwaggerConfigure,\
+  com.infilos.spring.config.ContextConfigure,\
+  com.infilos.spring.config.ShutdownConfigure
+  
+
