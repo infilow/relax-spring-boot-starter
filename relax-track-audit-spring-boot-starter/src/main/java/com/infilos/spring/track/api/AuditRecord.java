@@ -141,22 +141,34 @@ public class AuditRecord {
   public String toString() {
     StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
     builder.append("(");
-    builder.append("app=").append(app).append(",");
-    builder.append("org=").append(org).append(",");
-    builder.append("role=").append(role).append(",");
-    builder.append("user=").append(user).append(",");
-    builder.append("action=").append(action).append(",");
-    builder.append("tags={");
-    for (Map.Entry<String, Object> tag : tags.entrySet()) {
-      builder.append(tag.getKey());
-      builder.append("=");
-      builder.append(tag.getValue().toString());
-      builder.append(",");
+    if (app != null) {
+      builder.append("app=").append(app).append(",");
     }
-    if (!tags.isEmpty()) {
-      builder.delete(builder.length() - 1, builder.length());
+    if (org != null) {
+      builder.append("org=").append(org).append(",");
     }
-    builder.append("},");
+    if (role != null) {
+      builder.append("role=").append(role).append(",");
+    }
+    if (user != null) {
+      builder.append("user=").append(user).append(",");
+    }
+    if (action != null) {
+      builder.append("action=").append(action).append(",");
+    }
+    if (tags != null && !tags.isEmpty()) {
+      builder.append("tags={");
+      for (Map.Entry<String, Object> tag : tags.entrySet()) {
+        builder.append(tag.getKey());
+        builder.append("=");
+        builder.append(tag.getValue().toString());
+        builder.append(",");
+      }
+      if (!tags.isEmpty()) {
+        builder.delete(builder.length() - 1, builder.length());
+      }
+      builder.append("},");
+    }
     builder.append("time=").append(time).append(",");
     builder.append("succed=").append(succed);
     builder.append(")");
