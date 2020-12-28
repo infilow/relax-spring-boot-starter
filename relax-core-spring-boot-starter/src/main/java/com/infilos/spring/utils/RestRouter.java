@@ -50,7 +50,7 @@ public final class RestRouter {
     this.patchHeaders.put(header, value);
     return this;
   }
-  
+
   public RestRouter withLogger(Logger logger) {
     this.logger = logger;
     return this;
@@ -72,16 +72,14 @@ public final class RestRouter {
 
   private URI buildUri(HttpServletRequest request, String targetHost, String targetPath) {
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(targetHost);
-    
-    if(targetPath != null) {
+
+    if (targetPath != null) {
       builder.path(targetPath);
     } else {
       builder.path(request.getRequestURI());
     }
-    
-    return builder.query(request.getQueryString())
-        .build(true)
-        .toUri();
+
+    return builder.query(request.getQueryString()).build(true).toUri();
   }
 
   private byte[] buildHttpBody(HttpMethod method, HttpServletRequest request) throws IOException {
@@ -100,8 +98,8 @@ public final class RestRouter {
       String headerName = headerNames.nextElement();
       headers.set(headerName, request.getHeader(headerName));
     }
-    
-    for(Map.Entry<String,String> entry : patchHeaders.entrySet()) {
+
+    for (Map.Entry<String, String> entry : patchHeaders.entrySet()) {
       headers.set(entry.getKey(), entry.getValue());
     }
 
@@ -146,14 +144,11 @@ public final class RestRouter {
   }
 
   private void sendRoutingRequest(
-      HttpMethod method,
-      HttpServletResponse servletResponse,
-      URI uri,
-      HttpEntity<?> httpEntity)
+      HttpMethod method, HttpServletResponse servletResponse, URI uri, HttpEntity<?> httpEntity)
       throws IOException {
     RestTemplate restTemplate = new RestTemplate();
     try {
-      if(logger != null) {
+      if (logger != null) {
         logger.info("Routing dispatch: " + uri.toString());
       }
 
@@ -164,7 +159,7 @@ public final class RestRouter {
       byte[] responseBody = exchange.getBody();
       HttpHeaders responseHeaders = exchange.getHeaders();
 
-      if(logger != null) {
+      if (logger != null) {
         logger.info("Routing succed: {}, {}", uri.toURL(), responseStatusCode);
       }
 
@@ -175,7 +170,7 @@ public final class RestRouter {
       byte[] responseBody = e.getResponseBodyAsByteArray();
       HttpHeaders resonseHeaders = e.getResponseHeaders();
 
-      if(logger != null) {
+      if (logger != null) {
         logger.info("Routing failed: {}, {}", uri.toURL(), responseStatusCode);
       }
 
