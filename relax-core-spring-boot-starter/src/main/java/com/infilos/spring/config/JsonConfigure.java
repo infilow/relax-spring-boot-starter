@@ -1,19 +1,32 @@
 package com.infilos.spring.config;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.infilos.relax.Json;
+import com.infilos.relax.json.JsonException;
 import com.infilos.utils.Datetimes;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.*;
 
 @Configuration
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
@@ -92,13 +105,13 @@ public class JsonConfigure {
 
     @Override
     public LocalDate deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException {
+        throws IOException {
       JsonNode node = p.getCodec().readTree(p);
       if (node.isTextual() && StringUtils.isNotBlank(node.textValue())) {
         return LocalDate.parse(node.textValue(), Datetimes.Patterns.AtDays);
       }
 
-      return null;
+      throw JsonException.of("Deserialize LocalDate failed: " + node.toString());
     }
   }
 
@@ -106,13 +119,13 @@ public class JsonConfigure {
 
     @Override
     public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException {
+        throws IOException {
       JsonNode node = p.getCodec().readTree(p);
       if (node.isTextual() && StringUtils.isNotBlank(node.textValue())) {
         return LocalDateTime.parse(node.textValue(), Datetimes.Patterns.AtSeconds);
       }
 
-      return null;
+      throw JsonException.of("Deserialize LocalDateTime failed: " + node.toString());
     }
   }
 
@@ -120,13 +133,13 @@ public class JsonConfigure {
 
     @Override
     public ZonedDateTime deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException {
+        throws IOException {
       JsonNode node = p.getCodec().readTree(p);
       if (node.isTextual() && StringUtils.isNotBlank(node.textValue())) {
         return ZonedDateTime.parse(node.textValue(), Datetimes.Patterns.AtSeconds);
       }
 
-      return null;
+      throw JsonException.of("Deserialize ZonedDateTime failed: " + node.toString());
     }
   }
 
@@ -134,14 +147,14 @@ public class JsonConfigure {
 
     @Override
     public Timestamp deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException {
+        throws IOException {
       JsonNode node = p.getCodec().readTree(p);
       if (node.isTextual() && StringUtils.isNotBlank(node.textValue())) {
         return Timestamp.valueOf(
             LocalDateTime.parse(node.textValue(), Datetimes.Patterns.AtSeconds));
       }
 
-      return null;
+      throw JsonException.of("Deserialize Timestamp failed: " + node.toString());
     }
   }
 }
