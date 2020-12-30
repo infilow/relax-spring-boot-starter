@@ -10,38 +10,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Configuration
 public class JsonPathConfigure {
 
-  @Autowired(required = false)
-  private Optional<ObjectMapper> objectMapper;
+    @Autowired(required = false)
+    private Optional<ObjectMapper> objectMapper;
 
-  /** Setup json-path configuration with the same jackson mapper with spring binded. */
-  @PostConstruct
-  public void setupJsonPathMapper() {
-    objectMapper.ifPresent(
-        mapper -> {
-          com.jayway.jsonpath.Configuration.setDefaults(
-              new com.jayway.jsonpath.Configuration.Defaults() {
+    /**
+     * Setup json-path configuration with the same jackson mapper with spring binded.
+     */
+    @PostConstruct
+    public void setupJsonPathMapper() {
+        objectMapper.ifPresent(
+            mapper -> {
+                com.jayway.jsonpath.Configuration.setDefaults(
+                    new com.jayway.jsonpath.Configuration.Defaults() {
 
-                @Override
-                public JsonProvider jsonProvider() {
-                  // return new JacksonJsonProvider(mapper);
-                  return new JacksonJsonNodeJsonProvider(mapper);
-                }
+                        @Override
+                        public JsonProvider jsonProvider() {
+                            // return new JacksonJsonProvider(mapper);
+                            return new JacksonJsonNodeJsonProvider(mapper);
+                        }
 
-                @Override
-                public Set<Option> options() {
-                  return EnumSet.noneOf(Option.class);
-                }
+                        @Override
+                        public Set<Option> options() {
+                            return EnumSet.noneOf(Option.class);
+                        }
 
-                @Override
-                public MappingProvider mappingProvider() {
-                  return new JacksonMappingProvider(mapper);
-                }
-              });
-        });
-  }
+                        @Override
+                        public MappingProvider mappingProvider() {
+                            return new JacksonMappingProvider(mapper);
+                        }
+                    });
+            });
+    }
 }

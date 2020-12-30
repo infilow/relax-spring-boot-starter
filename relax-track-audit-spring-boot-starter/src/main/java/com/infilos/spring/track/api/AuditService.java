@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface AuditService {
 
-  int collect(List<AuditRecord> records);
+    int collect(List<AuditRecord> records);
 
-  List<AuditRecord> resolve(AuditCriteria criteria);
+    List<AuditRecord> resolve(AuditCriteria criteria);
 }

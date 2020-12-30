@@ -14,14 +14,13 @@ import java.io.IOException;
 @Configuration
 public class WrappedExchangeFilter extends OncePerRequestFilter {
 
-  @Override
-  protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    HttpServletRequest wrappedRequest =
-        request instanceof SpringRequestWrapper ? request : new SpringRequestWrapper(request);
-    HttpServletResponse wrappedRespond =
-        response instanceof SpringRespondWrapper ? response : new SpringRespondWrapper(response);
-    filterChain.doFilter(wrappedRequest, wrappedRespond);
-  }
+    @Override
+    protected void doFilterInternal(
+        HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+        filterChain.doFilter(
+            SpringRequestWrapper.create(request),
+            SpringRespondWrapper.create(response)
+        );
+    }
 }

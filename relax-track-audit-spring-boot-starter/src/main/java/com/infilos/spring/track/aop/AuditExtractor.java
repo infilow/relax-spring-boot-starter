@@ -5,7 +5,7 @@ import com.infilos.spring.track.api.AuditAttri;
 
 public interface AuditExtractor<CTX extends AuditContext> {
 
-  Audit from();
+    Audit from();
 
-  AuditAttribute extract(AuditAttri attri, CTX context);
+    AuditAttribute extract(AuditAttri attri, CTX context);
 }
