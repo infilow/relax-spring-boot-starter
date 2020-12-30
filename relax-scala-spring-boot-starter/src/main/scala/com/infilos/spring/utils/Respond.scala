@@ -26,10 +26,10 @@ final case class Respond[+T](code: Int, data: T, message: String) {
       bytes = objectMapper.writeValueAsBytes(this)
     } catch {
       case e: Throwable =>
-        bytes = String.format(s"{\"code\":-1,\"$message\":\"Serialize $toString failed: ${e.getMessage}\"}", this.toString, e.getMessage).getBytes
+        bytes = s"""{"code":-1,"$message":"Serialize $toString failed: ${e.getMessage}"}""".getBytes()
     }
 
-    new ResponseEntity[Array[Byte]](bytes, headers, HttpStatus.OK);
+    new ResponseEntity[Array[Byte]](bytes, headers, HttpStatus.OK)
   }
 
   override def toString: String =
@@ -67,7 +67,7 @@ object Respond {
   def failed[T](code: Int, error: String): Respond[T] =
     Respond(code, null.asInstanceOf[T], error)
 
-  def failed[T](code: Int, cause: Throwable, retry: Boolean = false): Respond[T] =
+  def failed[T](code: Int, cause: Throwable): Respond[T] =
     Respond(
       code,
       null.asInstanceOf[T],
