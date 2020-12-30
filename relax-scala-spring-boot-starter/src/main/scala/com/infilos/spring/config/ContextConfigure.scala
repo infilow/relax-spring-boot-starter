@@ -23,8 +23,6 @@ object ContextConfigure {
 
   def inject[T](beanClass: Class[T]): T = context.getBean(beanClass)
 
-  def inject[T](beanName: String): T = context.getBean(beanName).asInstanceOf[T]
-
   def context: ApplicationContext = {
     if (isSpringRunning) {
       _Configure.context
@@ -34,4 +32,6 @@ object ContextConfigure {
   }
 
   def isSpringRunning: Boolean = _Configure != null
+
+  def inject[T](beanName: String): T = context.getBean(beanName).asInstanceOf[T]
 }

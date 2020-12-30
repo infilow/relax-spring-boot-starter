@@ -46,16 +46,20 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.infilos</groupId>
-            <artifactId>relax-json-scala</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>com.infilos</groupId>
             <artifactId>relax-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.infilos</groupId>
+            <artifactId>relax-json-scala</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
         </dependency>
     </dependencies>
 

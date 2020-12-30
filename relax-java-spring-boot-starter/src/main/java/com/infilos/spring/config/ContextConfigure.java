@@ -10,33 +10,34 @@ import java.util.Objects;
 @Component
 public class ContextConfigure {
 
-  private static ApplicationContext staticContext;
+    private static ApplicationContext staticContext;
 
-  @Autowired private ApplicationContext thisContext;
+    @Autowired
+    private ApplicationContext thisContext;
 
-  public static boolean isSpringRunning() {
-    return Objects.nonNull(staticContext);
-  }
-
-  public static ApplicationContext context() {
-    if (!isSpringRunning()) {
-      throw new UnsupportedOperationException("Spring context is unavailable!");
+    public static boolean isSpringRunning() {
+        return Objects.nonNull(staticContext);
     }
 
-    return staticContext;
-  }
+    public static ApplicationContext context() {
+        if (!isSpringRunning()) {
+            throw new UnsupportedOperationException("Spring context is unavailable!");
+        }
 
-  @SuppressWarnings("unchecked")
-  public static <T> T inject(String beanName) {
-    return (T) staticContext.getBean(beanName);
-  }
+        return staticContext;
+    }
 
-  public static <T> T inject(Class<T> beanClass) {
-    return staticContext.getBean(beanClass);
-  }
+    @SuppressWarnings("unchecked")
+    public static <T> T inject(String beanName) {
+        return (T) staticContext.getBean(beanName);
+    }
 
-  @PostConstruct
-  public void construct() {
-    staticContext = thisContext;
-  }
+    public static <T> T inject(Class<T> beanClass) {
+        return staticContext.getBean(beanClass);
+    }
+
+    @PostConstruct
+    public void construct() {
+        staticContext = thisContext;
+    }
 }

@@ -1,6 +1,7 @@
 package com.infilos.spring.config
 
 import com.infilos.spring.utils._
+import com.infilos.utils.Loggable
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextClosedEvent
 

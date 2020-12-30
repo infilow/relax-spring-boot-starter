@@ -14,15 +14,11 @@ object Responds {
     }
   }
 
-  implicit def futureToDeferred[T](
-    future: Future[T]
-  )(implicit context: ExecutionContext): DeferredResult[T] = {
+  implicit def futureToDeferred[T](future: Future[T])(implicit context: ExecutionContext): DeferredResult[T] = {
     new FutureResult(future)
   }
 
-  implicit def futureToRespond[T](
-    future: Future[T]
-  )(implicit context: ExecutionContext): DeferredResult[Respond[T]] = {
+  implicit def futureToRespond[T](future: Future[T])(implicit context: ExecutionContext): DeferredResult[Respond[T]] = {
     val respond = future.transformWith {
       case Success(value) => Future.successful(Respond.succed(value))
       case Failure(cause) => Future.successful(Respond.failed(cause))
@@ -32,14 +28,14 @@ object Responds {
 
   implicit def eitherToRespond[T](either: Either[_, T]): Respond[T] = {
     either match {
-      case Left(cause)  => Respond.failed(format(cause))
+      case Left(cause) => Respond.failed(format(cause))
       case Right(value) => Respond.succed(value)
     }
   }
 
   implicit def futureEitherToRespond[T](
-    futureEither: Future[Either[_, T]]
-  )(implicit context: ExecutionContext): DeferredResult[Respond[T]] = {
+                                         futureEither: Future[Either[_, T]]
+                                       )(implicit context: ExecutionContext): DeferredResult[Respond[T]] = {
     val respond = futureEither.transformWith {
       case Success(value) => Future.successful(eitherToRespond(value))
       case Failure(cause) => Future.successful(Respond.failed(cause))
@@ -55,8 +51,8 @@ object Responds {
   }
 
   implicit def format(any: Any): String = any match {
-    case ex: Throwable => s"${ex.getClass.getSimpleName}(${ex.getMessage})"
-    case null          => "Null"
-    case _             => any.toString
+    case ex: Throwable => s"${ex.getClass.getSimpleName}(${if (ex.getMessage == null) "" else ex.getMessage})"
+    case null => "Null"
+    case _ => any.toString
   }
 }

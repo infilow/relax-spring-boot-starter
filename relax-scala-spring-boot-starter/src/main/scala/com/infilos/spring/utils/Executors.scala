@@ -1,7 +1,7 @@
 package com.infilos.spring.utils
 
-import java.util.concurrent.{ExecutorService, ThreadFactory, Executors => JExecutors}
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.{ExecutorService, ThreadFactory, Executors => JExecutors}
 import scala.concurrent.ExecutionContext
 
 object Executors {

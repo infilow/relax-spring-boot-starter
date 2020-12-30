@@ -19,6 +19,20 @@ import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 @AutoConfigureAfter(Array(classOf[WebMvcAutoConfiguration]))
 class JsonConfigure {
 
+  @Bean
+  def jackson2HttpMessageConverter(): MappingJackson2HttpMessageConverter =
+    new MappingJackson2HttpMessageConverter(objectMapper())
+
+  @Bean
+  def objectMapper(): ObjectMapper = {
+    Json4s.underMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+    Json4s.underMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    Json4s.underMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+    Json4s.underMapper.registerModule(customTimeModule)
+
+    Json4s.underMapper()
+  }
+
   private def customTimeModule: SimpleModule = {
     val module = new SimpleModule()
 
@@ -33,20 +47,6 @@ class JsonConfigure {
     module.addDeserializer(classOf[Timestamp], new JsonConfigure.TimestampDeserializer)
 
     module
-  }
-
-  @Bean
-  def jackson2HttpMessageConverter(): MappingJackson2HttpMessageConverter =
-    new MappingJackson2HttpMessageConverter(objectMapper())
-
-  @Bean
-  def objectMapper(): ObjectMapper = {
-    Json4s.underMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
-    Json4s.underMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-    Json4s.underMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-    Json4s.underMapper.registerModule(customTimeModule)
-
-    Json4s.underMapper()
   }
 }
 
