@@ -1,55 +1,59 @@
 package com.infilos.spring.track.wrapper;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SpringRequestWrapper extends HttpServletRequestWrapper {
-  private byte[] body;
+/**
+ * Json body will be read from bytes, form body will be read from params.
+ */
+public class SpringRequestWrapper extends ContentCachingRequestWrapper {
+    private byte[] cachedBytes;
 
-  public SpringRequestWrapper(HttpServletRequest request) {
-    super(request);
-    try {
-      body = IOUtils.toByteArray(request.getInputStream());
-    } catch (IOException ex) {
-      body = new byte[0];
+    public SpringRequestWrapper(HttpServletRequest request) throws IOException {
+        super(request);
+        super.getParameterMap();
+        // form
+        this.cachedBytes = super.getContentAsByteArray();
+        // json
+        if (cachedBytes.length == 0) {
+            cachedBytes = IOUtils.toByteArray(super.getInputStream());
+        }
     }
-  }
 
-  @Override
-  public ServletInputStream getInputStream() throws IOException {
-    return new ServletInputStream() {
-      final ByteArrayInputStream bytes = new ByteArrayInputStream(body);
+    public static SpringRequestWrapper create(HttpServletRequest request) throws IOException {
+        if (request instanceof SpringRequestWrapper) {
+            return (SpringRequestWrapper) request;
+        }
+        
+        return new SpringRequestWrapper(request);
+    }
 
-      @Override
-      public boolean isFinished() {
-        return false;
-      }
+    @Override
+    public ServletInputStream getInputStream() {
+        return new InputStreamWrapper(cachedBytes);
+    }
 
-      @Override
-      public boolean isReady() {
-        return true;
-      }
+    @Override
+    public BufferedReader getReader() {
+        return new BufferedReader(new InputStreamReader(getInputStream()));
+    }
 
-      @Override
-      public void setReadListener(ReadListener listener) {}
+    public Map<String, String> getAllHeaders() {
+        final Map<String, String> headers = new HashMap<>();
+        Collections.list(getHeaderNames()).forEach(it -> headers.put(it, getHeader(it)));
+        return headers;
+    }
 
-      @Override
-      public int read() throws IOException {
-        return bytes.read();
-      }
-    };
-  }
-
-  public Map<String, String> getAllHeaders() {
-    final Map<String, String> headers = new HashMap<>();
-    Collections.list(getHeaderNames()).forEach(it -> headers.put(it, getHeader(it)));
-    return headers;
-  }
+    public String getBodyString() throws IOException {
+        return IOUtils.toString(getInputStream(), getCharacterEncoding());
+    }
 }
