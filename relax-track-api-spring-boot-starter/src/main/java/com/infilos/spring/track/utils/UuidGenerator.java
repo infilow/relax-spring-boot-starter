@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 public final class UuidGenerator {
-    private UuidGenerator() {
-    }
 
     public void fillMdc(HttpServletRequest request) {
         MDC.clear();
