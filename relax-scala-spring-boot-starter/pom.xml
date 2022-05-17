@@ -5,7 +5,7 @@
     <parent>
         <artifactId>relax-spring-boot-starter</artifactId>
         <groupId>com.infilos</groupId>
-        <version>2.6.7-0</version>
+        <version>2.4.1-0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,7 +26,7 @@
         <repository>
             <id>artima</id>
             <name>Artima Maven Repository</name>
-            <url>https://repo.artima.com/releases/</url>
+            <url>http://repo.artima.com/releases</url>
         </repository>
     </repositories>
 
@@ -100,7 +100,7 @@
                         <compilerPlugin>
                             <groupId>com.artima.supersafe</groupId>
                             <artifactId>supersafe_${scala.version}</artifactId>
-                            <version>1.1.12</version>
+                            <version>1.1.10</version>
                         </compilerPlugin>
                     </compilerPlugins>
                 </configuration>
