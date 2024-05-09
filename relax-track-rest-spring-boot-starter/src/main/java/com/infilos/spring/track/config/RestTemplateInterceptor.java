@@ -12,16 +12,15 @@ import java.io.IOException;
 public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
-    public ClientHttpResponse intercept(
-        HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         String reqid = MDC.get(Consts.ReqidHeader);
-        String corrid = MDC.get(Consts.ReqidHeader);
+        String corrid = MDC.get(Consts.CoridHeader);
 
         if (reqid != null) {
-            request.getHeaders().add("X-Request-ID", reqid);
+            request.getHeaders().add(Consts.ReqidHeader, reqid);
         }
         if (corrid != null) {
-            request.getHeaders().add("X-Correlation-ID", corrid);
+            request.getHeaders().add(Consts.CoridHeader, corrid);
         }
 
         return execution.execute(request, body);

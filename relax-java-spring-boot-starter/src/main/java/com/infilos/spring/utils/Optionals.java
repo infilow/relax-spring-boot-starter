@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("ALL")
 public final class Optionals<T> {
     private final Optional<T> optional;
 

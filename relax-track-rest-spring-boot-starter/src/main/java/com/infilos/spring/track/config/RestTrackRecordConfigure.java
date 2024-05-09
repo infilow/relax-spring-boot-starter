@@ -32,8 +32,8 @@ public class RestTrackRecordConfigure {
     }
 
     @Bean
-    public RestTrackRecodFilter filter() {
-        return new RestTrackRecodFilter(context, options, generator());
+    public RestTrackRecordFilter filter() {
+        return new RestTrackRecordFilter(context, options, generator());
     }
 
     @Bean

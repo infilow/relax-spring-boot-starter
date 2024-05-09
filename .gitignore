@@ -37,3 +37,4 @@ project/plugins/project/
 # Custom
 html/
 logs
+.DS_Store

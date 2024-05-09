@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infilos.relax.Json;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import org.springframework.http.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public final class Respond<T> {
@@ -54,6 +56,18 @@ public final class Respond<T> {
         return new Respond<>(code, null, message);
     }
 
+    public static <T> Respond<T> failed(RespondEnum<?> error) {
+        return new Respond<>(error.getCode(), null, error.getMessage());
+    }
+
+    public static <T> Respond<T> failed(RespondEnum<?> error, String message) {
+        return new Respond<>(error.getCode(), null, message);
+    }
+
+    public static <T> Respond<T> failed(RespondEnum<?> error, Object... messageTemplateArgs) {
+        return new Respond<>(error.getCode(), null, String.format(error.getMessage(), messageTemplateArgs));
+    }
+
     public static <T> Respond<T> failed(Throwable cause) {
         return new Respond<>(
             FailedCode,
@@ -96,7 +110,12 @@ public final class Respond<T> {
 
     public static ResponseEntity<byte[]> ofFileBytes(String name, byte[] bytes) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", name));
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition
+            .attachment()
+            .filename(name, StandardCharsets.UTF_8)
+            .build()
+            .toString()
+        );
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
         return ofBytes(HttpStatus.OK, headers, bytes);
@@ -111,10 +130,15 @@ public final class Respond<T> {
                     MediaTypeFactory.getMediaType(name)
                         .map(MediaType::toString)
                         .orElse(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        String contentDisposition = ContentDisposition
+            .attachment()
+            .filename(name, StandardCharsets.UTF_8)
+            .build()
+            .toString();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", name));
         headers.add(HttpHeaders.CONTENT_TYPE, mediaType);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
 
         return ofBytes(HttpStatus.OK, headers, bytes);
     }
@@ -161,13 +185,20 @@ public final class Respond<T> {
         try {
             bytes = objectMapper.writeValueAsBytes(this);
         } catch (JsonProcessingException e) {
-            bytes =
-                String.format(
-                    "{\"code\":-1,\"message\":\"Serialize %s failed: %s\"}",
-                    this.toString(), e.getMessage())
-                    .getBytes();
+            bytes = String.format(
+                "{\"code\":-1,\"message\":\"Serialize %s failed: %s\"}",
+                this, e.getMessage()
+            ).getBytes();
         }
 
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    /**
+     * Convert this Respond to json ResponseEntity.
+     */
+    @JsonIgnore
+    public ResponseEntity<byte[]> asBytesResponse() {
+        return asBytesResponse(Json.underMapper());
     }
 }

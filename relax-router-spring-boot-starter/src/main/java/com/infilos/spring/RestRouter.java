@@ -153,7 +153,7 @@ public final class RestRouter {
         RestTemplate restTemplate = new RestTemplate();
         try {
             if (logger != null) {
-                logger.info("Routing dispatch: " + uri.toString());
+                logger.info("Routing dispatch: {}", uri.toString());
             }
 
             ResponseEntity<byte[]> exchange =
