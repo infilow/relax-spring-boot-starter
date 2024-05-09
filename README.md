@@ -1,5 +1,7 @@
 # relax-sprint-boot-starter
 
+Please read [Relax Stack documention here](https://relax.infilos.com/).
+
 A collection of toolkits to develop spring boot applications.
 
 - relax-java
